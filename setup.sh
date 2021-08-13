@@ -1,0 +1,1 @@
+export DATABASE_URL="postgres://postgres:7749@localhost:5432/capstonedb"
