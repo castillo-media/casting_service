@@ -3,12 +3,15 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-database_path = os.environ['DATABASE_URL']
+# database_path = os.environ['DATABASE_URL']
 
-# database_path = os.environ.get('DATABASE_URL')
-# if not database_path:
-#     database_name = "agency"
-#     database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
+database_path = os.environ.get('DATABASE_URL')
+
+if not database_path:
+    database_name = "agency"
+    database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
+    if database_path.startswith("postgres://"):
+        database_path = database_path.replace("postgres://", "postgresql://", 1)
 
 db = SQLAlchemy()
 
@@ -41,8 +44,32 @@ class Person(db.Model):
     self.name = name
     self.catchphrase = catchphrase
 
+  def update(self):
+      db.session.commit()  
+
   def format(self):
     return {
       'id': self.id,
       'name': self.name,
       'catchphrase': self.catchphrase}
+
+
+class Movie(db.Model):  
+  __tablename__ = 'Movies'
+
+  id = Column(Integer, primary_key=True)
+  name = Column(String)
+  release = Column(String)
+
+  def __init__(self, name, release=""):
+    self.name = name
+    self.release = release
+
+  def update(self):
+    db.session.commit()  
+
+  def format(self):
+    return {
+      'id': self.id,
+      'name': self.name,
+      'release': self.release}
