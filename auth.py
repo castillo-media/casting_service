@@ -5,14 +5,15 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-####These Environment variables are returning None
-# AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
-# ALGORITHMS = os.environ.get('API_AUDIENCE')
-# API_AUDIENCE = os.environ.get('API_AUDIENCE')
+####These are environment variables for deployment
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+ALGORITHMS = os.environ.get('API_AUDIENCE')
+API_AUDIENCE = os.environ.get('API_AUDIENCE')
 
-AUTH0_DOMAIN = 'castillomedia2.eu.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'agency_api'
+####These are variable for local development
+# AUTH0_DOMAIN = 'castillomedia2.eu.auth0.com'
+# ALGORITHMS = ['RS256']
+# API_AUDIENCE = 'agency_api'
 
 ## AuthError Exception
 '''

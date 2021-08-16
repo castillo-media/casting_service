@@ -3,13 +3,15 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-# database_path = os.environ['DATABASE_URL']
 
+### environment variable for deployment
 database_path = os.environ.get('DATABASE_URL')
 
-# if not database_path:
-#     database_name = "agency"
-#     database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
+### database for local development
+# database_path = "postgresql://{}/{}".format('localhost:5432', 'agency')
+
+## This is a hack to help Heroku replace the database dialect
+##  from postgres (no longer supported) to postgresql (supported)
 if database_path.startswith("postgres://"):
     database_path = database_path.replace("postgres://", "postgresql://", 1)
 
@@ -29,10 +31,7 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
-'''
-Person
-Have title and release year
-'''
+
 class Person(db.Model):  
   __tablename__ = 'People'
 
