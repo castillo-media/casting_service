@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask import Flask, request, jsonify, abort
 from models import setup_db, Movie, Person
 import json
-from auth import AuthError, requires_auth, get_token_auth_header, verify_decode_jwt, check_permissions
+from auth import AuthError, requires_auth
 
 
 db = SQLAlchemy()
@@ -16,7 +16,6 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app)
 
-
     @app.after_request
     def after_request(response):
         response.headers.add(
@@ -27,11 +26,10 @@ def create_app(test_config=None):
             'GET,POST,DELETE,OPTIONS')
         return response
 
-
     @app.route('/')
     def get_greeting():
         # excited = os.environ['EXCITED']
-        greeting = "Hello World" 
+        greeting = "Hello World"
         # if excited == 'true': greeting = greeting + "!!!!!"
         return greeting
 
@@ -39,28 +37,27 @@ def create_app(test_config=None):
     def be_cool():
         return "Be cool, man, be coooool! You're almost a FSND grad!"
 
-
     @app.route('/people', methods=['GET'])
     @requires_auth('get:actors')
     def getPeople(self):
         try:
             all_people = db.session.query(Person).all()
-            people_list=[]
+            people_list = []
             for person in all_people:
-                person={'id':person.id,'person_name':person.name,'movie_catchphrase':person.catchphrase}
+                person = {
+                    'id': person.id,
+                    'person_name': person.name,
+                    'movie_catchphrase': person.catchphrase}
                 people_list.append(person)
 
-        except:
+        except BaseException:
             abort(422)
         finally:
             db.session.close()
             return jsonify({
                 'success': True,
-                'person':people_list
+                'person': people_list
             })
-
-
-
 
     @app.route('/people', methods=['POST'])
     @requires_auth('post:actor')
@@ -86,13 +83,12 @@ def create_app(test_config=None):
                 "person": body
             })
 
-
     @app.route('/people/<int:person_id>', methods=['DELETE'])
     @requires_auth('delete:actor')
-    def deletePerson(self,person_id):
+    def deletePerson(self, person_id):
         try:
-            person_to_delete = db.session.query(Person).filter(Person.id == person_id)\
-                              .one_or_none()
+            person_to_delete = db.session.query(Person).filter(
+                Person.id == person_id) .one_or_none()
             db.session.delete(person_to_delete)
             db.session.commit()
         except Exception:
@@ -105,17 +101,15 @@ def create_app(test_config=None):
                 'deleted_id': person_id
             })
 
-
-
     @app.route('/people/<int:person_id>/edit', methods=['PATCH'])
     @requires_auth('patch:actor')
-    def editPerson(self,person_id):
+    def editPerson(self, person_id):
         body = request.get_json()
         new_name = body['name']
         new_catchphrase = body['catchphrase']
         try:
             personToEdit = Person.query.filter(Person.id == person_id)\
-                          .one_or_none()
+                .one_or_none()
             personToEdit.name = new_name
             personToEdit.catchphrase = new_catchphrase
             personToEdit.update()
@@ -133,28 +127,27 @@ def create_app(test_config=None):
                 }
             })
 
-
-
     @app.route('/movies', methods=['GET'])
     @requires_auth('get:movies')
     def getMovies(self):
         try:
             all_movies = db.session.query(Movie).all()
-            movies_list=[]
+            movies_list = []
             for movie in all_movies:
-                movie_unit={'id':movie.id,'movie_name':movie.name,'movie_release':movie.release}
+                movie_unit = {
+                    'id': movie.id,
+                    'movie_name': movie.name,
+                    'movie_release': movie.release}
                 movies_list.append(movie_unit)
 
-        except:
+        except BaseException:
             abort(422)
         finally:
             db.session.close()
             return jsonify({
                 "success": True,
-                'movies':movies_list
+                'movies': movies_list
             })
-
-
 
     @app.route('/movies', methods=['POST'])
     @requires_auth('post:movie')
@@ -180,16 +173,13 @@ def create_app(test_config=None):
                 "movie": body
             })
 
-
-
-
     @app.route('/movies/<int:movie_id>/edit', methods=['PATCH'])
     @requires_auth('patch:movie')
-    def editMovie(self,movie_id):
+    def editMovie(self, movie_id):
         body = request.get_json()
         new_name = body['name']
         new_release = body['release']
-        error=False
+        error = False
         try:
             movieToEdit = Movie.query.filter(Movie.id == movie_id)\
                 .one_or_none()
@@ -198,11 +188,11 @@ def create_app(test_config=None):
         except Exception:
             db.session.rollback()
             db.session.close()
-            error=True
+            error = True
             abort(422)
         finally:
             if not error:
-                movieToEdit.update()              
+                movieToEdit.update()
                 db.session.close()
                 return jsonify({
                     'success': True,
@@ -216,15 +206,12 @@ def create_app(test_config=None):
                 db.session.close()
                 abort(404)
 
-
-
-
     @app.route('/movies/<int:movie_id>', methods=['DELETE'])
     @requires_auth('delete:movie')
-    def deleteMovie(self,movie_id):
+    def deleteMovie(self, movie_id):
         try:
-            movie_to_delete = db.session.query(Movie).filter(Movie.id == movie_id)\
-                              .one_or_none()
+            movie_to_delete = db.session.query(Movie).filter(
+                Movie.id == movie_id) .one_or_none()
             db.session.delete(movie_to_delete)
             db.session.commit()
         except Exception:
@@ -237,15 +224,13 @@ def create_app(test_config=None):
                 'deleted_id': movie_id
             })
 
-
     @app.errorhandler(401)
     def unprocessable(error):
         return jsonify({
             "success": False,
             "error": 401,
             "message": "unauthorized"
-        }), 401  
-
+        }), 401
 
     @app.errorhandler(404)
     def resourceNotFound(error):
@@ -255,7 +240,6 @@ def create_app(test_config=None):
             "message": "resource not found"
         }), 404
 
-
     @app.errorhandler(405)
     def resourceNotFound(error):
         return jsonify({
@@ -263,7 +247,6 @@ def create_app(test_config=None):
             "error": 405,
             "message": "method not allowed"
         }), 405
-
 
     @app.errorhandler(422)
     def unprocessable(error):
@@ -273,7 +256,6 @@ def create_app(test_config=None):
             "message": "unprocessable"
         }), 422
 
-
     @app.errorhandler(500)
     def resourceNotFound(error):
         return jsonify({
@@ -282,10 +264,7 @@ def create_app(test_config=None):
             "message": "internal server error"
         }), 500
 
-
-
     return app
-
 
     @app.errorhandler(AuthError)
     def authorizationError(exception):
