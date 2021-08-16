@@ -1,9 +1,14 @@
+import os
 import json
 from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
+####These Environment variables are returning None
+# AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+# ALGORITHMS = os.environ.get('API_AUDIENCE')
+# API_AUDIENCE = os.environ.get('API_AUDIENCE')
 
 AUTH0_DOMAIN = 'castillomedia2.eu.auth0.com'
 ALGORITHMS = ['RS256']
