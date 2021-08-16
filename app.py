@@ -6,8 +6,6 @@ from models import setup_db, Movie, Person
 import json
 from auth import AuthError, requires_auth, get_token_auth_header, verify_decode_jwt, check_permissions
 
-database_name = "agency"
-database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
 
 db = SQLAlchemy()
 
