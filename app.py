@@ -264,16 +264,17 @@ def create_app(test_config=None):
             "message": "internal server error"
         }), 500
 
-    return app
-
     @app.errorhandler(AuthError)
     def authorizationError(exception):
         response = jsonify(exception.error)
         response.status_code = exception.status_code
         return response
 
+    return app
+
 
 app = create_app()
+
 
 if __name__ == '__main__':
     app.run()

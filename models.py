@@ -8,12 +8,14 @@ import json
 database_path = os.environ.get('DATABASE_URL')
 
 # database for local development
-# database_path = "postgresql://{}/{}".format('localhost:5432', 'agency')
+if database_path is None:
+    database_path = "postgresql://{}/{}".format('localhost:5432', 'agency')
 
 # This is a hack to help Heroku replace the database dialect
 # from postgres (no longer supported) to postgresql (supported)
 if database_path.startswith("postgres://"):
     database_path = database_path.replace("postgres://", "postgresql://", 1)
+
 
 db = SQLAlchemy()
 
