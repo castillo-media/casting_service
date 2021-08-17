@@ -39,7 +39,14 @@ The different endpoints require authentication in Auth, there are data and actio
 ## Local development
 -----
 
-After cloning the repository you need to install the requirements from the starter folder with the following command:
+After cloning the repository it would be recommended to work on a virtual environment:
+<kbd>python3 -m venv venv/</kbd><br/>
+<kbd>source venv/bin/activate</kbd> 
+
+In order to use environment variables run:
+<kbd>bash ./setup.sh</kbd> 
+
+Then you need to install the requirements from the starter folder with the following command:
 <kbd>pip install -r requirements.txt</kbd>
 
 You must have postgres installed https://www.postgresql.org/ and create two databases, one for development and one for testing (In the code named "agency" and "agency_test" respectively). Then you need to start the database server (See https://www.postgresql.org/docs/13/server-start.html)
@@ -87,7 +94,7 @@ Additionally you will need to add some more environment variable in Heroku to co
 (Please keep in mind that for local development the environment variables are stored in the file named setup.sh, but they will be replaced after deployment in Heroku for the ones stored by Heroku)
 
 To push the code to Heroku:
-<kbd>git push heroku master</kbd>
+<kbd>git push heroku main</kbd>
 
 Once the app is deployed, run the migrations with:
 <kbd>heroku run python manage.py db upgrade --app name_of_your_application</kbd>
